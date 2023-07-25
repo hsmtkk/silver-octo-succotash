@@ -1,0 +1,20 @@
+version: "3"
+
+vars:
+  REGISTRY: registry8DCeacWM
+
+tasks:
+  deploy:
+    cmds:
+      - terraform fmt
+      - terraform validate
+      - terraform apply -auto-approve
+  local-build:
+    cmds:
+      - docker build --tag webapp .
+  az-build:
+    cmds:
+      - az acr build --file Dockerfile --registry {{.REGISTRY}} --image webapp .
+  enable-admin:
+    cmds:
+      - az acr update -n {{.REGISTRY}} --admin-enabled true
